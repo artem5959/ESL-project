@@ -51,10 +51,16 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "nrf_delay.h"
-#include "boards.h"
+#include "nrf_gpio.h"
 #include <math.h>
+#include "leds.h"
 
 #define ID 6616
+#define LEDS_NUMBER 4
+
+
+
+
 
 /**
  * @brief Function for application main entry.
@@ -62,26 +68,46 @@
 
 int id_index (int led_index1)
 {
-    return 2 * ((ID / (1000 / (int)pow(10, led_index1) ) ) % 10);
+    return ((ID / (1000 / (int)pow(10, led_index1) ) ) % 10);
 }
+
+const uint32_t leds[LEDS_NUMBER] = {LED_GR, LED_R, LED_G, LED_B};
 
 int main(void)
 {
     /* Configure board. */
-    bsp_board_init(BSP_INIT_LEDS);
+    make_leds_out();
+    all_leds_off();
+    make_button_in();
 
     /* Toggle LEDs. */
     while (true)
     {
         for (int i = 0; i < LEDS_NUMBER; i++)
         {   
-            int id_value = id_index(i);
-            for(int j = 0; j < id_value; j++) {
-            bsp_board_led_invert(i);
-            nrf_delay_ms(300);
+            uint32_t index = id_index(i); // setup index
+
+            
+
+            for( uint32_t count = 0; count < index; ) {
+            if (check_button_status(BUTTON_PIN) == ON_BUTTON) {
+                
+                led_on(leds[i]);
+                nrf_delay_ms(600);
+
+                if (check_button_status(BUTTON_PIN) == ON_BUTTON){ 
+
+                led_off(leds[i]);
+                nrf_delay_ms(300);
+
+                count++;
+                }
             }
-            nrf_delay_ms(500);
+            }
         }
+
+
+        
     }
 }
 
