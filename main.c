@@ -54,9 +54,9 @@
 #include "nrf_gpio.h"
 #include <math.h>
 #include "leds.h"
+#include "button.h"
 
 #define ID 6616
-#define LEDS_NUMBER 4
 
 
 
@@ -71,7 +71,7 @@ int id_index (int led_index1)
     return ((ID / (1000 / (int)pow(10, led_index1) ) ) % 10);
 }
 
-const uint32_t leds[LEDS_NUMBER] = {LED_GR, LED_R, LED_G, LED_B};
+
 
 int main(void)
 {

@@ -1,5 +1,6 @@
 #include "leds.h"
 
+
 void make_leds_out(void){
      nrf_gpio_cfg_output(LED_GR);
      nrf_gpio_cfg_output(LED_R);
