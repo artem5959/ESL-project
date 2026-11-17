@@ -19,6 +19,7 @@
 #include "leds.h"
 #include "button.h"
 #include "pwm.h"
+#include "pwm_config.h"
 
 
 #define ID 6616
@@ -60,7 +61,7 @@ int main(void)
                 
                 pwm_start();
                
-                for (uint32_t j = 0; j < 10; ) {
+                for (uint32_t j = 0; j < NRF_PWM_VALUES_DUTY_CYCLE_VALUE; ) {
                 
                 while(on_off_status == ON_STATUS) {
                     pwm_seq_next_step();
