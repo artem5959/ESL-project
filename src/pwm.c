@@ -56,15 +56,6 @@ void configure_pwm(void) {
     nrf_pwm_decoder_set(NRF_PWM0, NRF_PWM_LOAD_INDIVIDUAL, PWM_TRIG);
 
     nrf_pwm_sequence_set(NRF_PWM0, 0, &seq1);
-    //nrf_pwm_sequence_set(NRF_PWM0, 1, &seq1);
-
-    //nrf_pwm_loop_set(NRF_PWM0, 1);
-
-    //nrf_pwm_shorts_set(NRF_PWM0, NRF_PWM_SHORT_LOOPSDONE_SEQSTART0_MASK);
-
-   // nrf_pwm_task_trigger(NRF_PWM0, NRF_PWM_TASK_SEQSTART0);
-
-
 
 }
 
