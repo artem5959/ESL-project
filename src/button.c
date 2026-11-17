@@ -33,10 +33,10 @@ volatile uint16_t debounce_flag = 0;
 
 void clocks_and_timers_init(void)
 {
-    APP_ERROR_CHECK(nrf_drv_clock_init());
+    nrf_drv_clock_init();
     nrf_drv_clock_lfclk_request(NULL);
     while (!nrf_drv_clock_lfclk_is_running()) {}
-    APP_ERROR_CHECK(app_timer_init());
+    app_timer_init();
 }
 
 void reset_button_count(void){
