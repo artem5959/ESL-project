@@ -17,6 +17,8 @@
 
 #define LEDS_NUMBER 4
 
+#define ID 6616
+
 static const uint32_t leds[LEDS_NUMBER] = {LED_GR, LED_R, LED_G, LED_B};
 
 
@@ -29,6 +31,8 @@ void all_leds_off(void); // выключение всех светодиодов
 
 uint32_t check_led_status(uint32_t pin); // проверка статуса светодиода
 
+
+uint32_t id_index (uint32_t led_index1);
 
 
 

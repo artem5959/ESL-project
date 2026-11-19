@@ -2,11 +2,14 @@
 // pwm
 
 #include "pwm.h"
-#include "nrf_pwm.h"
+#include "nrfx_pwm.h"
 #include "leds.h"
 #include "log.h"
-#include "button.h"
-#include "nrf_delay.h"
+
+
+static nrfx_pwm_t pwm0 = NRFX_PWM_INSTANCE(0);
+
+static nrfx_pwm_config_t config1 = NRFX_PWM_DEFAULT_CONFIG(1000, 25);
 
 uint32_t pins[LEDS_NUMBER] = { LED_GR, LED_R, LED_G, LED_B };
 
@@ -37,81 +40,32 @@ static nrf_pwm_values_individual_t *const duty_cycle_leds[LEDS_NUMBER] = {
 static const nrf_pwm_sequence_t seq1 = {
     .values.p_individual = duty_cycle_led0,
     .length = NRF_PWM_VALUES_LENGTH(duty_cycle_led0),
-    .repeats = PWM_SEQUENCE_REPEATS,
+    .repeats = 100,
     .end_delay = PWM_SEQUENCE_END_DELAY,
 };
 
 
 void pwm_setup(void) {
 
-    nrf_pwm_enable(NRF_PWM0);
-
-    nrf_pwm_pins_set(NRF_PWM0, pins);
+    nrfx_pwm_init(&pwm0, &config1, NULL);
 
     NRF_LOG_INFO("PWM init");
 
 }
 
 
-void configure_pwm(void) {
-
-    nrf_pwm_configure(NRF_PWM0, NRF_PWM_CLK_1MHz, NRF_PWM_MODE_UP, 1000);
-
-    nrf_pwm_decoder_set(NRF_PWM0, NRF_PWM_LOAD_INDIVIDUAL, PWM_TRIG);
-
-    nrf_pwm_sequence_set(NRF_PWM0, 0, &seq1);
-
-    NRF_LOG_INFO("PWM config");
-
-}
-
-void pwm_seqtable_set(uint16_t count)
-{
-nrf_pwm_seq_ptr_set(NRF_PWM0, 0, (uint16_t const *)duty_cycle_leds[count]);
-//nrf_pwm_seq_ptr_set(NRF_PWM0, 1, (uint16_t const *)duty_cycle_leds[count]);
-}
-
 void pwm_start(void)
 {
-nrf_pwm_task_trigger(NRF_PWM0, NRF_PWM_TASK_SEQSTART0);
+nrfx_pwm_simple_playback(&pwm0, &seq1, 6, NRFX_PWM_FLAG_STOP);
 
 NRF_LOG_INFO("PWM seq started");
 }
 
-void pwm_seq_next_step(void)
-{
-    nrf_pwm_task_trigger(NRF_PWM0, NRF_PWM_TASK_NEXTSTEP);
-}
-
 void pwm_stop(void)
 {
-    nrf_pwm_task_trigger(NRF_PWM0, NRF_PWM_TASK_STOP);
-
-
-    while (!nrf_pwm_event_check(NRF_PWM0, NRF_PWM_EVENT_STOPPED))
-
-    {
-
-    }
-
-    nrf_pwm_event_clear(NRF_PWM0, NRF_PWM_EVENT_STOPPED);
-
-    NRF_LOG_INFO("PWM seq stopped");
+  nrfx_pwm_stop(&pwm0, true);
+  NRF_LOG_INFO("PWM seq stopped");
 
 }
 
 
-void pwm_sequence_func(void)
-{
-for (uint32_t j = 0; j < NRF_PWM_VALUES_DUTY_CYCLE_VALUE; ) {
-                LOG_BACKEND_USB_PROCESS();
-                NRF_LOG_PROCESS();
-                while(on_off_status == ON_STATUS) {
-                    
-                    pwm_seq_next_step();
-                    j++;
-                    nrf_delay_ms(100);
-                    break;
-                    }
-                }
-}

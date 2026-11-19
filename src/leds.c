@@ -6,6 +6,7 @@
 
 
 
+
 //gpio_setup
 void make_leds_out(void){
      nrf_gpio_cfg_output(LED_GR);
@@ -40,6 +41,12 @@ uint32_t check_led_status(uint32_t pin){
    return OFF_LED; //  return 1
 }
 //
+
+
+uint32_t id_index (uint32_t led_index1)
+{
+    return ((ID / (1000 / (int)pow(10, led_index1) ) ) % 10);
+}
 
 
 
