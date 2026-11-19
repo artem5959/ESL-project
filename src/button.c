@@ -4,6 +4,7 @@
 #include "app_timer.h"
 #include "nrf_drv_clock.h"
 #include "app_error.h"
+#include "log.h"
 
 APP_TIMER_DEF(debounce_timer);
 APP_TIMER_DEF(double_click_timer);
@@ -37,6 +38,7 @@ void clocks_and_timers_init(void)
     nrf_drv_clock_lfclk_request(NULL);
     while (!nrf_drv_clock_lfclk_is_running()) {}
     app_timer_init();
+    NRF_LOG_INFO("clock and timers init");
 }
 
 void reset_button_count(void){
@@ -56,16 +58,19 @@ static void debounce_handler(void * p_context)
 
     if(button_status == ON_BUTTON && button_clics < 2) {
         button_clics++;
+        NRF_LOG_INFO("First click");
         }
 
     if (button_clics == 1){
         app_timer_start(double_click_timer, APP_TIMER_TICKS(400), NULL);
+        NRF_LOG_INFO("double click timer start");
     }
 
     if(button_clics == 2){
         app_timer_stop(double_click_timer);
         button_clics = 0;
         (on_off_status == OFF_STATUS) ? (on_off_status = ON_STATUS) : (on_off_status = OFF_STATUS);
+        NRF_LOG_INFO("button Double click");
     }
 
 }
@@ -73,9 +78,11 @@ static void debounce_handler(void * p_context)
 
 static void button_func(nrfx_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
 {   
+    NRF_LOG_INFO("Start irq func");
     button_status = check_button_status(BUTTON_PIN);
     if(button_status == ON_BUTTON) {
     app_timer_start(debounce_timer, APP_TIMER_TICKS(50), NULL);
+    NRF_LOG_INFO("debounce timer started");
     }
 
 }
@@ -94,14 +101,18 @@ nrfx_gpiote_in_init(BUTTON_PIN, &cfg, button_func);
 app_timer_create(&debounce_timer, APP_TIMER_MODE_SINGLE_SHOT, debounce_handler);
 
 app_timer_create(&double_click_timer, APP_TIMER_MODE_SINGLE_SHOT, double_click_handler);
+
+NRF_LOG_INFO("GPIOTE init");
 }
 
 void irq_on(void)
 {
 nrfx_gpiote_in_event_enable(BUTTON_PIN, true);
+NRF_LOG_INFO("irq on");
 }
 
 void irq_off(void)
 {
 nrfx_gpiote_in_event_enable(BUTTON_PIN, false);
+NRF_LOG_INFO("irq off");
 }

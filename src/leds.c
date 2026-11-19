@@ -1,4 +1,5 @@
 #include "leds.h"
+#include "log.h"
 
 
 
@@ -18,11 +19,14 @@ void all_leds_off(void){
     nrf_gpio_pin_write(LED_R, OFF_LED);
     nrf_gpio_pin_write(LED_G, OFF_LED);
     nrf_gpio_pin_write(LED_B, OFF_LED);
+
+    NRF_LOG_INFO("All leds pins is off");
 }
 ////
 void gpio_setup(void) {
     make_leds_out();
     all_leds_off();
+    NRF_LOG_INFO("Gpio setup");
 }
 //
 

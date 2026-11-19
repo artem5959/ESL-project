@@ -5,6 +5,7 @@
 #include "pwm_config.h"
 #include "nrf_pwm.h"
 #include "leds.h"
+#include "log.h"
 
 uint32_t pins[LEDS_NUMBER] = { LED_GR, LED_R, LED_G, LED_B };
 
@@ -46,6 +47,8 @@ void pwm_setup(void) {
 
     nrf_pwm_pins_set(NRF_PWM0, pins);
 
+    NRF_LOG_INFO("PWM init");
+
 }
 
 
@@ -56,6 +59,8 @@ void configure_pwm(void) {
     nrf_pwm_decoder_set(NRF_PWM0, NRF_PWM_LOAD_INDIVIDUAL, PWM_TRIG);
 
     nrf_pwm_sequence_set(NRF_PWM0, 0, &seq1);
+
+    NRF_LOG_INFO("PWM config");
 
 }
 
@@ -68,6 +73,8 @@ nrf_pwm_seq_ptr_set(NRF_PWM0, 0, (uint16_t const *)duty_cycle_leds[count]);
 void pwm_start(void)
 {
 nrf_pwm_task_trigger(NRF_PWM0, NRF_PWM_TASK_SEQSTART0);
+
+NRF_LOG_INFO("PWM started");
 }
 
 void pwm_seq_next_step(void)
@@ -87,5 +94,7 @@ void pwm_stop(void)
     }
 
     nrf_pwm_event_clear(NRF_PWM0, NRF_PWM_EVENT_STOPPED);
+
+    NRF_LOG_INFO("PWM stopped");
 
 }

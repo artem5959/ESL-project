@@ -20,6 +20,7 @@
 #include "button.h"
 #include "pwm.h"
 #include "pwm_config.h"
+#include "log.h"
 
 
 #define ID 6616
@@ -45,6 +46,7 @@ int main(void)
     configure_pwm();
     gpiote_setup();
     irq_on();
+    logs_init();  
 
 
     /* Toggle LEDs. */
@@ -62,8 +64,10 @@ int main(void)
                 pwm_start();
                
                 for (uint32_t j = 0; j < NRF_PWM_VALUES_DUTY_CYCLE_VALUE; ) {
-                
+                LOG_BACKEND_USB_PROCESS();
+                NRF_LOG_PROCESS();
                 while(on_off_status == ON_STATUS) {
+                    
                     pwm_seq_next_step();
                     j++;
                     nrf_delay_ms(100);
@@ -79,7 +83,8 @@ int main(void)
         }
 
 
-        
+       
+
     }
 }
 
