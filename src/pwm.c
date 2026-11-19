@@ -5,6 +5,8 @@
 #include "nrf_pwm.h"
 #include "leds.h"
 #include "log.h"
+#include "button.h"
+#include "nrf_delay.h"
 
 uint32_t pins[LEDS_NUMBER] = { LED_GR, LED_R, LED_G, LED_B };
 
@@ -96,4 +98,20 @@ void pwm_stop(void)
 
     NRF_LOG_INFO("PWM seq stopped");
 
+}
+
+
+void pwm_sequence_func(void)
+{
+for (uint32_t j = 0; j < NRF_PWM_VALUES_DUTY_CYCLE_VALUE; ) {
+                LOG_BACKEND_USB_PROCESS();
+                NRF_LOG_PROCESS();
+                while(on_off_status == ON_STATUS) {
+                    
+                    pwm_seq_next_step();
+                    j++;
+                    nrf_delay_ms(100);
+                    break;
+                    }
+                }
 }

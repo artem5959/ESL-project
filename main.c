@@ -13,7 +13,6 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "nrf_delay.h"
 #include "nrf_gpio.h"
 #include <math.h>
 #include "leds.h"
@@ -62,17 +61,7 @@ int main(void)
                 
                 pwm_start();
                
-                for (uint32_t j = 0; j < NRF_PWM_VALUES_DUTY_CYCLE_VALUE; ) {
-                LOG_BACKEND_USB_PROCESS();
-                NRF_LOG_PROCESS();
-                while(on_off_status == ON_STATUS) {
-                    
-                    pwm_seq_next_step();
-                    j++;
-                    nrf_delay_ms(100);
-                    break;
-                    }
-                }
+                pwm_sequence_func();
                 
                 count++;
                 pwm_stop();

@@ -25,5 +25,7 @@ void pwm_seq_next_step(void);
 
 void pwm_stop(void);
 
+void pwm_sequence_func(void);
+
 #endif
 
