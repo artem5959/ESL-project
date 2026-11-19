@@ -19,7 +19,6 @@
 #include "leds.h"
 #include "button.h"
 #include "pwm.h"
-#include "pwm_config.h"
 #include "log.h"
 
 

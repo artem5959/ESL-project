@@ -2,7 +2,6 @@
 // pwm
 
 #include "pwm.h"
-#include "pwm_config.h"
 #include "nrf_pwm.h"
 #include "leds.h"
 #include "log.h"
@@ -74,7 +73,7 @@ void pwm_start(void)
 {
 nrf_pwm_task_trigger(NRF_PWM0, NRF_PWM_TASK_SEQSTART0);
 
-NRF_LOG_INFO("PWM started");
+NRF_LOG_INFO("PWM seq started");
 }
 
 void pwm_seq_next_step(void)
@@ -95,6 +94,6 @@ void pwm_stop(void)
 
     nrf_pwm_event_clear(NRF_PWM0, NRF_PWM_EVENT_STOPPED);
 
-    NRF_LOG_INFO("PWM stopped");
+    NRF_LOG_INFO("PWM seq stopped");
 
 }
