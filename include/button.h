@@ -18,6 +18,8 @@
 #define SAT_MODIFICATION 2
 #define BRIGHT_MODIFICATION 3
 
+static const uint32_t modes[4] = {NO_INPUT_MODE, HUE_MODIFICATION, SAT_MODIFICATION, BRIGHT_MODIFICATION};
+
 extern volatile uint16_t button_status;
 
 

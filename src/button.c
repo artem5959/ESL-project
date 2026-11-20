@@ -8,6 +8,7 @@
 
 APP_TIMER_DEF(debounce_timer);
 APP_TIMER_DEF(double_click_timer);
+APP_TIMER_DEF(button_pressed_timer);
 
 typedef enum
 {
@@ -15,22 +16,17 @@ typedef enum
     EVENT_BUTTON_PRESSED
 } event_t;
 
-typedef enum
-{
-    EVENT_DOUBLE_CLICK
-    EVENT_BUTTON_PRESSED
-} event_t;
 
 void event_handler(event_t event)
 {
     switch (event)
     {
-        case EVENT_SINGLE_CLICK:
-            if
+        case EVENT_DOUBLE_CLICK:
+            
             break;
 
         case EVENT_BUTTON_PRESSED:
-            // Логика двойного клика
+            
             break;
     }
 }
@@ -58,6 +54,8 @@ volatile uint16_t on_off_status = OFF_STATUS;
 
 volatile uint16_t mode = NO_INPUT_MODE;
 
+volatile uint16_t modes_index = 0;
+
 volatile uint16_t debounce_flag = 0;
 
 void clocks_and_timers_init(void)
@@ -78,6 +76,13 @@ static void double_click_handler(void * p_context)
     button_clics = 0;
 }
 
+static void button_pressed_handler(void * p_context)
+{
+    if(BUTTON_STATUS == ON_BUTTON) {
+        event_handler(EVENT_BUTTON_PRESSED);
+    }
+}
+
 static void debounce_handler(void * p_context)
 {
     button_status = check_button_status(BUTTON_PIN);
@@ -91,13 +96,17 @@ static void debounce_handler(void * p_context)
 
     if (button_clics == 1){
         app_timer_start(double_click_timer, APP_TIMER_TICKS(400), NULL);
+        app_timer_start(button_pressed_timer, APP_TIMER_TICKS(1000), NULL);
         NRF_LOG_INFO("double click timer start");
     }
 
     if(button_clics == 2){
+
         app_timer_stop(double_click_timer);
         button_clics = 0;
-        (on_off_status == OFF_STATUS) ? (on_off_status = ON_STATUS) : (on_off_status = OFF_STATUS);
+
+        event_handler(EVENT_DOUBLE_CLICK);
+
         NRF_LOG_INFO("button Double click");
     }
 
@@ -129,6 +138,8 @@ nrfx_gpiote_in_init(BUTTON_PIN, &cfg, button_func);
 app_timer_create(&debounce_timer, APP_TIMER_MODE_SINGLE_SHOT, debounce_handler);
 
 app_timer_create(&double_click_timer, APP_TIMER_MODE_SINGLE_SHOT, double_click_handler);
+
+app_timer_create(&button_pressed_timer, APP_TIMER_MODE_SINGLE_SHOT, button_pressed_handler);
 
 NRF_LOG_INFO("GPIOTE init");
 }
