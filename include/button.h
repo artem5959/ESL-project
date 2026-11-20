@@ -8,6 +8,7 @@
 #define BUTTON_PIN NRF_GPIO_PIN_MAP(1, 6)
 
 #define ON_BUTTON 0
+#define PRESSED 0
 #define OFF_BUTTON 1
 
 #define ON_STATUS 0

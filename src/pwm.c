@@ -136,9 +136,15 @@ void pwm_stop_indication(void)
 }
 
 
+
+
+
+
+
+
 //nrfx_pwm_sequence_update(&pwm0, 0, &seq1);
 //nrfx_pwm_sequence_values_update(&pwm0, 0, duty_cycle_led1);
-
+/*
 void modifications_start (void);
 {
 pwm_start_indication();
@@ -178,17 +184,5 @@ if(mode == NO_INPUT_MODE){
 }
 }
 
-void hue_modification_mode_on(void)
-{       
-        if(mode == HUE_MODIFICATION){  
-            nrfx_pwm_sequence_update(&pwm1, 0, &seq_hue_modification); 
-            while (mode == HUE_MODIFICATION) {
-                while(BUTTON_STATUS == PRESSED) {
-                    hue_modification_one_up();
-                    nrfx_pwm_sequence_values_update(&pwm0, 0, duty_cycle_led1);  // update sequense
-                }
-            }
-        
-        }   
-}
 
+*/

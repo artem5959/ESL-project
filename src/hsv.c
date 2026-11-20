@@ -1,3 +1,5 @@
+#include "hsv.h"
+
 typedef struct {
     uint8_t r;
     uint8_t g;

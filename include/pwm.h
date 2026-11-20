@@ -25,6 +25,12 @@ void pwm_start(void);
 
 void pwm_stop(void);
 
+void pwm_start_main(void);
+
+void pwm_start_indication(void);
+
+void pwm_stop_indication(void);
+
 
 
 #endif

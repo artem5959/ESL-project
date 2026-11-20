@@ -16,13 +16,45 @@ typedef enum
     EVENT_BUTTON_PRESSED
 } event_t;
 
+void mode_handler(void)
+{
+    swtich (mode)
+    {
+        case NO_INPUT_MODE:
+        no_input_mode_on();
+        NRF_LOG_INFO("NOW -  NO_INPUT_MODE ")
+        break;
+
+        case HUE_MODIFICATION:
+        hue_modification_mode_on();
+        NRF_LOG_INFO("NOW -  HUE MODIFICATION MODE ")
+        break;
+
+        case SAT_MODIFICATION:
+        sat_modification_mode_on();
+        NRF_LOG_INFO("NOW -  SAT MODIFICATION MODE ")
+        break;
+
+        case BRIGHT_MODIFICATION:
+        brightness_modification_mode_on();
+        NRF_LOG_INFO("NOW -  BRIGHTNESS MODIFICATION MODE ")
+        break;
+
+    }
+}
+
 
 void event_handler(event_t event)
 {
     switch (event)
     {
         case EVENT_DOUBLE_CLICK:
-            
+            mode++;
+            NRF_LOG_INFO("MODE CHANGED")
+            if(mode > BRIGHT_MODIFICATION) {
+                mode = NO_INPUT_MODE;
+            }
+            mode_handler();
             break;
 
         case EVENT_BUTTON_PRESSED:
@@ -46,6 +78,15 @@ uint32_t check_button_status(uint32_t pin){
     return OFF_BUTTON; // return 1
 }
 
+uint16_t check_mode_status(void){
+   return mode;
+}
+
+void mode_handler(void)
+{
+
+}
+
 volatile uint16_t button_status = OFF_BUTTON;
 
 volatile uint16_t button_clics = 0;
@@ -53,8 +94,6 @@ volatile uint16_t button_clics = 0;
 volatile uint16_t on_off_status = OFF_STATUS;
 
 volatile uint16_t mode = NO_INPUT_MODE;
-
-volatile uint16_t modes_index = 0;
 
 volatile uint16_t debounce_flag = 0;
 
@@ -78,8 +117,9 @@ static void double_click_handler(void * p_context)
 
 static void button_pressed_handler(void * p_context)
 {
-    if(BUTTON_STATUS == ON_BUTTON) {
+    if (check_button_status(BUTTON_PIN) == ON_BUTTON) {
         event_handler(EVENT_BUTTON_PRESSED);
+        NRF_LOG_INFO("EVENT: BUTTON PRESSED")
     }
 }
 
@@ -96,13 +136,16 @@ static void debounce_handler(void * p_context)
 
     if (button_clics == 1){
         app_timer_start(double_click_timer, APP_TIMER_TICKS(400), NULL);
-        app_timer_start(button_pressed_timer, APP_TIMER_TICKS(1000), NULL);
+        app_timer_start(button_pressed_timer, APP_TIMER_TICKS(2000), NULL);
         NRF_LOG_INFO("double click timer start");
+        NRF_LOG_INFO("button pressed timer start");
+        
     }
 
     if(button_clics == 2){
 
         app_timer_stop(double_click_timer);
+        app_timer_stop(button_pressed_timer);
         button_clics = 0;
 
         event_handler(EVENT_DOUBLE_CLICK);
