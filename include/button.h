@@ -13,6 +13,11 @@
 #define ON_STATUS 0
 #define OFF_STATUS 1
 
+#define NO_INPUT_MODE 0
+#define HUE_MODIFICATION 1
+#define SAT_MODIFICATION 2
+#define BRIGHT_MODIFICATION 3
+
 extern volatile uint16_t button_status;
 
 

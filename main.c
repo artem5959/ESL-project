@@ -14,7 +14,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "nrf_gpio.h"
-#include <math.h>
 #include "leds.h"
 #include "button.h"
 #include "pwm.h"
@@ -39,17 +38,17 @@ int main(void)
     gpiote_setup();
     irq_on();
     logs_init();  
-
+    pwm_start();
 
     /* Toggle LEDs. */
     while (true)
     {
      
-            pwm_start();
-            pwm_stop();
+        
       
 
-
+                LOG_BACKEND_USB_PROCESS();
+                NRF_LOG_PROCESS();
        
 
     }

@@ -9,6 +9,32 @@
 APP_TIMER_DEF(debounce_timer);
 APP_TIMER_DEF(double_click_timer);
 
+typedef enum
+{
+    EVENT_DOUBLE_CLICK
+    EVENT_BUTTON_PRESSED
+} event_t;
+
+typedef enum
+{
+    EVENT_DOUBLE_CLICK
+    EVENT_BUTTON_PRESSED
+} event_t;
+
+void event_handler(event_t event)
+{
+    switch (event)
+    {
+        case EVENT_SINGLE_CLICK:
+            if
+            break;
+
+        case EVENT_BUTTON_PRESSED:
+            // Логика двойного клика
+            break;
+    }
+}
+
 
 void make_button_in(void){
 
@@ -29,6 +55,8 @@ volatile uint16_t button_status = OFF_BUTTON;
 volatile uint16_t button_clics = 0;
 
 volatile uint16_t on_off_status = OFF_STATUS;
+
+volatile uint16_t mode = NO_INPUT_MODE;
 
 volatile uint16_t debounce_flag = 0;
 

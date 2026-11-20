@@ -10,7 +10,12 @@
 #define PWM_TRIG NRF_PWM_STEP_TRIGGERED
 
 
+
+
 #include <stdint.h>
+#include "leds.h"
+
+#define DEFAULT_HUE ((ID % 100) * 360 / 100)
 
 
 void pwm_setup(void);// инициализация pwm и выходов
