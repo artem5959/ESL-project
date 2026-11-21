@@ -67,10 +67,21 @@ nrf_pwm_values_individual_t duty_cycle_led1[] = {
     {0, 0, 0, 0}
 };
 
+nrf_pwm_values_individual_t duty_cycle_led_indication_noinput[] = {
+    {0, 0, 0, 0}
+};
+
 
 static const nrf_pwm_sequence_t seq1 = {
     .values.p_individual = duty_cycle_led1,
     .length = NRF_PWM_VALUES_LENGTH(duty_cycle_led1),
+    .repeats = 100,
+    .end_delay = 0,
+};
+
+const nrf_pwm_sequence_t no_input_modification = {
+    .values.p_individual = duty_cycle_led_indication_noinput,
+    .length = NRF_PWM_VALUES_LENGTH(duty_cycle_led_indication_noinput),
     .repeats = 100,
     .end_delay = 0,
 };
@@ -92,7 +103,7 @@ const nrf_pwm_sequence_t seq_sat_modification = {
 const nrf_pwm_sequence_t seq_bright_modification = {
     .values.p_individual = duty_cycle_led_gr2,
     .length = NRF_PWM_VALUES_LENGTH(duty_cycle_led_gr2),
-    .repeats = 100,
+    .repeats = 10,
     .end_delay = 0,
 };
 
@@ -116,7 +127,7 @@ NRF_LOG_INFO("PWM main seq started");
 
 void pwm_start_indication(void)
 {
-nrfx_pwm_simple_playback(&pwm1_led_indication, &seq_hue_modification, 6, NRFX_PWM_FLAG_LOOP);
+nrfx_pwm_simple_playback(&pwm1_led_indication, &no_input_modification, 2, NRFX_PWM_FLAG_LOOP);
 
 NRF_LOG_INFO("PWM indication seq started");
 }

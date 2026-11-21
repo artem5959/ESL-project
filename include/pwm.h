@@ -22,6 +22,7 @@
 extern const nrf_pwm_sequence_t seq_hue_modification;
 extern const nrf_pwm_sequence_t seq_sat_modification;
 extern const nrf_pwm_sequence_t seq_bright_modification;
+extern const nrf_pwm_sequence_t no_input_modification;
 
 extern nrf_pwm_values_individual_t duty_cycle_led1[];
 

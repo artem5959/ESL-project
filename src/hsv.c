@@ -1,6 +1,7 @@
 #include "hsv.h"
 #include "pwm.h"
 #include <math.h>
+#include "log.h"
 
 
 rgb_t actual = {0, 0, 0};
@@ -11,6 +12,14 @@ hsv_t hsv = {
     .brightness_value = 100
 
 };
+
+void setup_default_hsv(hsv_t *hsv_structure,
+                        rgb_t *rgb_actual_structure,
+                        nrf_pwm_values_individual_t *duty_cycle_ar)
+{
+    hsv_to_rgb(*hsv_structure, rgb_actual_structure); 
+    rgb_to_duty_cycle_values(rgb_actual_structure, duty_cycle_ar);
+}
 
 
 void hsv_to_rgb(hsv_t hsv_structure, rgb_t *rgb_actual_structure)
@@ -90,39 +99,55 @@ void hue_modification_one_up(hsv_t *hsv_structure,
 
     rgb_to_duty_cycle_values(rgb_actual_structure, duty_cycle_ar); // write rgb to duty cycle values massive
 
+    //NRF_LOG_INFO("HUE CHANGE NOW - %d", hsv_structure->hue_value);
     
+}
+
+static uint32_t sat_updown_flag = DOWN;
+static uint32_t bright_updown_flag = DOWN;
+
+void change_sat_value (hsv_t *hsv_structure)
+{
+    if (hsv_structure->saturation_value >= 100) sat_updown_flag = DOWN ;
+    if (hsv_structure->saturation_value == 0) sat_updown_flag = UP ;
+    if (sat_updown_flag == UP)
+    hsv_structure->saturation_value++;
+    if (sat_updown_flag == DOWN)
+    hsv_structure->saturation_value--;
+}
+
+void change_bright_value (hsv_t *hsv_structure)
+{
+    if (hsv_structure->brightness_value >= 100) bright_updown_flag = DOWN ;
+    if (hsv_structure->brightness_value == 0) bright_updown_flag = UP ;
+    if (bright_updown_flag == UP)
+    hsv_structure->brightness_value++;
+    if (bright_updown_flag == DOWN)
+    hsv_structure->brightness_value--;
 }
 
 void saturation_modification_one_up(hsv_t *hsv_structure,
                             rgb_t *rgb_actual_structure,
                             nrf_pwm_values_individual_t *duty_cycle_ar)
 {
-    hsv_structure->saturation_value++; // Change saturation value
-
-     if(hsv_structure->saturation_value > 100) {
-        hsv_structure->saturation_value = 0;
-    }
+    change_sat_value(hsv_structure);
 
     hsv_to_rgb(*hsv_structure, rgb_actual_structure); // Convert hsv values(saturation in this) to rgb actual massive
 
     rgb_to_duty_cycle_values(rgb_actual_structure, duty_cycle_ar); // write rgb to duty cycle values massive
 
-    
+    //NRF_LOG_INFO("SAT CHANGE NOW - %d", hsv_structure->saturation_value);
 }
 
 void brightness_modification_one_up(hsv_t *hsv_structure,
                             rgb_t *rgb_actual_structure,
                             nrf_pwm_values_individual_t *duty_cycle_ar)
 {
-    hsv_structure->brightness_value++; // Change saturation value
-
-     if(hsv_structure->brightness_value > 100) {
-        hsv_structure->brightness_value = 0;
-    }
+    change_bright_value(hsv_structure);
 
     hsv_to_rgb(*hsv_structure, rgb_actual_structure); // Convert hsv values(brightness in this) to rgb actual massive
 
     rgb_to_duty_cycle_values(rgb_actual_structure, duty_cycle_ar); // write rgb to duty cycle values massive
 
-    
+    //NRF_LOG_INFO("BRIGHT CHANGE NOW - %d", hsv_structure->brightness_value);
 }

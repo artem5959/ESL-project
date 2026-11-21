@@ -13,32 +13,7 @@ APP_TIMER_DEF(button_pressed_timer);
 
 
 
-void mode_handler(void)
-{
-    switch (mode)
-    {
-        case NO_INPUT_MODE:
-        no_input_mode_on();
-        NRF_LOG_INFO("NOW -  NO_INPUT_MODE ");
-        break;
 
-        case HUE_MODIFICATION:
-        hue_modification_mode_on();
-        NRF_LOG_INFO("NOW -  HUE MODIFICATION MODE ");
-        break;
-
-        case SAT_MODIFICATION:
-        sat_modification_mode_on();
-        NRF_LOG_INFO("NOW -  SAT MODIFICATION MODE ");
-        break;
-
-        case BRIGHT_MODIFICATION:
-        brightness_modification_mode_on();
-        NRF_LOG_INFO("NOW -  BRIGHTNESS MODIFICATION MODE ");
-        break;
-
-    }
-}
 
 
 void event_handler(event_t event)
@@ -51,11 +26,12 @@ void event_handler(event_t event)
             if(mode > BRIGHT_MODIFICATION) {
                 mode = NO_INPUT_MODE;
             }
-            mode_handler();
+            mode_flag = CHANGED;
             break;
 
         case EVENT_BUTTON_PRESSED:
-            
+            button_status = PRESSED;
+            NRF_LOG_INFO("BUTTON PRESSED");
             break;
     }
 }
@@ -110,26 +86,27 @@ static void button_pressed_handler(void * p_context)
 {
     if (check_button_status(BUTTON_PIN) == ON_BUTTON) {
         event_handler(EVENT_BUTTON_PRESSED);
-        NRF_LOG_INFO("EVENT: BUTTON PRESSED");
+        //NRF_LOG_INFO("EVENT: BUTTON PRESSED");
     }
 }
 
 static void debounce_handler(void * p_context)
 {
     button_status = check_button_status(BUTTON_PIN);
+    //NRF_LOG_INFO("BUTTON STATUS = ON BUTTON");
 
     if (button_status != ON_BUTTON) return; 
 
     if(button_status == ON_BUTTON && button_clics < 2) {
         button_clics++;
-        NRF_LOG_INFO("First click");
+       // NRF_LOG_INFO("First click");
         }
 
     if (button_clics == 1){
         app_timer_start(double_click_timer, APP_TIMER_TICKS(400), NULL);
-        app_timer_start(button_pressed_timer, APP_TIMER_TICKS(2000), NULL);
-        NRF_LOG_INFO("double click timer start");
-        NRF_LOG_INFO("button pressed timer start");
+        app_timer_start(button_pressed_timer, APP_TIMER_TICKS(1000), NULL);
+        //NRF_LOG_INFO("double click timer start");
+        //NRF_LOG_INFO("button pressed timer start");
         
     }
 
@@ -141,7 +118,7 @@ static void debounce_handler(void * p_context)
 
         event_handler(EVENT_DOUBLE_CLICK);
 
-        NRF_LOG_INFO("button Double click");
+        //NRF_LOG_INFO("Double click");
     }
 
 }
@@ -149,12 +126,15 @@ static void debounce_handler(void * p_context)
 
 static void button_func(nrfx_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
 {   
-    NRF_LOG_INFO("Start irq func");
+    //NRF_LOG_INFO("Start irq func");
     button_status = check_button_status(BUTTON_PIN);
     if(button_status == ON_BUTTON) {
     app_timer_start(debounce_timer, APP_TIMER_TICKS(50), NULL);
-    NRF_LOG_INFO("debounce timer started");
+    //NRF_LOG_INFO("debounce timer started");
     }
+    //else NRF_LOG_INFO("BUTTON STATUS = OFF BUTTON");
+
+    //NRF_LOG_INFO("End irq func")
 
 }
 

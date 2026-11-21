@@ -41,16 +41,23 @@ int main(void)
     irq_on();
     logs_init();  
     pwm_start_main();
+    pwm_start_indication();
+    setup_default_hsv(&hsv, &actual, duty_cycle_led1);
+
 
     /* Toggle LEDs. */
     while (true)
     {
      
-        
+            if (mode_flag == CHANGED) {
+                mode_handler();
+            }
                 
-
+                
                 LOG_BACKEND_USB_PROCESS();
                 NRF_LOG_PROCESS();
+                
+                __WFI();
        
 
     }

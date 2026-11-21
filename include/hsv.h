@@ -5,6 +5,8 @@
 
 #include "nrfx_pwm.h"
 
+#define UP 1
+#define DOWN 0
 typedef struct {
     uint8_t r;
     uint8_t g;
@@ -21,6 +23,10 @@ extern rgb_t actual;
 extern hsv_t hsv;
 
 void hsv_to_rgb(hsv_t hsv_structure, rgb_t *rgb_actual_structure);
+
+void setup_default_hsv(hsv_t *hsv_structure,
+                        rgb_t *rgb_actual_structure,
+                        nrf_pwm_values_individual_t *duty_cycle_ar);
 
 void rgb_to_duty_cycle_values(rgb_t *rgb_actual_structure,
                             nrf_pwm_values_individual_t *duty_cycle_ar);
