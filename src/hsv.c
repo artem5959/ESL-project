@@ -1,20 +1,11 @@
 #include "hsv.h"
+#include "pwm.h"
+#include <math.h>
 
-typedef struct {
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-} rgb_t;
 
-typedef struct {
-    uint16_t hue_value;        // 0–359
-    uint8_t saturation_value;  // 0–100
-    uint8_t brightness_value;       // 0–100
-} hsv_t;
+rgb_t actual = {0, 0, 0};
 
-static rgb_t actual = {0, 0, 0};
-
-static hsv_t hsv = {
+hsv_t hsv = {
     .hue_value = DEFAULT_HUE,
     .saturation_value = 100,
     .brightness_value = 100
@@ -24,55 +15,58 @@ static hsv_t hsv = {
 
 void hsv_to_rgb(hsv_t hsv_structure, rgb_t *rgb_actual_structure)
 {
-    uint16_t hue = hsv_structure.hue_value;
-    uint8_t sat = hsv_structure.saturation_value;
-    uint8_t val = hsv_structure.brightness_value;
+    float h = hsv_structure.hue_value;
+    float s = hsv_structure.saturation_value / 100.0f;
+    float v = hsv_structure.brightness_value / 100.0f;
 
-    uint8_t sector = hue / 60;
-    uint8_t remainder = hue % 60;
+    float c = v * s;
+    float x = c * (1.0f - fabsf(fmodf(h / 60.0f, 2.0f) - 1.0f));
+    float m = v - c;
 
-    uint16_t p = val * (100 - sat) / 100;
-    uint16_t q = val * (100 - sat * remainder / 60) / 100;
-    uint16_t t = val * (100 - sat * (60 - remainder) / 60) / 100;
+    float r = 0.0f;
+    float g = 0.0f;
+    float b = 0.0f;
 
-    switch (sector)
+    if (h < 60.0f)
     {
-        case 0:
-            rgb_actual_structure->r = val * 255 / 100;
-            rgb_actual_structure->g = t * 255 / 100;
-            rgb_actual_structure->b = p * 255 / 100;
-            break;
-
-        case 1:
-            rgb_actual_structure->r = q * 255 / 100;
-            rgb_actual_structure->g = val * 255 / 100;
-            rgb_actual_structure->b = p * 255 / 100;
-            break;
-
-        case 2:
-            rgb_actual_structure->r = p * 255 / 100;
-            rgb_actual_structure->g = val * 255 / 100;
-            rgb_actual_structure->b = t * 255 / 100;
-            break;
-
-        case 3:
-            rgb_actual_structure->r = p * 255 / 100;
-            rgb_actual_structure->g = q * 255 / 100;
-            rgb_actual_structure->b = val * 255 / 100;
-            break;
-
-        case 4:
-            rgb_actual_structure->r = t * 255 / 100;
-            rgb_actual_structure->g = p * 255 / 100;
-            rgb_actual_structure->b = val * 255 / 100;
-            break;
-
-        default:
-            rgb_actual_structure->r = val * 255 / 100;
-            rgb_actual_structure->g = p * 255 / 100;
-            rgb_actual_structure->b = q * 255 / 100;
-            break;
+        r = c;
+        g = x;
+        b = 0.0f;
     }
+    else if (h < 120.0f)
+    {
+        r = x;
+        g = c;
+        b = 0.0f;
+    }
+    else if (h < 180.0f)
+    {
+        r = 0.0f;
+        g = c;
+        b = x;
+    }
+    else if (h < 240.0f)
+    {
+        r = 0.0f;
+        g = x;
+        b = c;
+    }
+    else if (h < 300.0f)
+    {
+        r = x;
+        g = 0.0f;
+        b = c;
+    }
+    else
+    {
+        r = c;
+        g = 0.0f;
+        b = x;
+    }
+
+    rgb_actual_structure->r = (uint8_t)((r + m) * 255.0f);
+    rgb_actual_structure->g = (uint8_t)((g + m) * 255.0f);
+    rgb_actual_structure->b = (uint8_t)((b + m) * 255.0f);
 }
 
 void rgb_to_duty_cycle_values(rgb_t *rgb_actual_structure, nrf_pwm_values_individual_t *duty_cycle_ar)
@@ -111,7 +105,7 @@ void saturation_modification_one_up(hsv_t *hsv_structure,
 
     hsv_to_rgb(*hsv_structure, rgb_actual_structure); // Convert hsv values(saturation in this) to rgb actual massive
 
-    rgb_to_duty_cycle_values(*rgb_actual_structure, duty_cycle_ar); // write rgb to duty cycle values massive
+    rgb_to_duty_cycle_values(rgb_actual_structure, duty_cycle_ar); // write rgb to duty cycle values massive
 
     
 }
@@ -128,7 +122,7 @@ void brightness_modification_one_up(hsv_t *hsv_structure,
 
     hsv_to_rgb(*hsv_structure, rgb_actual_structure); // Convert hsv values(brightness in this) to rgb actual massive
 
-    rgb_to_duty_cycle_values(*rgb_actual_structure, duty_cycle_ar); // write rgb to duty cycle values massive
+    rgb_to_duty_cycle_values(rgb_actual_structure, duty_cycle_ar); // write rgb to duty cycle values massive
 
     
 }

@@ -15,13 +15,22 @@
 #include <stdint.h>
 #include "leds.h"
 
+#include "nrfx_pwm.h"
+
 #define DEFAULT_HUE ((ID % 100) * 360 / 100)
 
+extern const nrf_pwm_sequence_t seq_hue_modification;
+extern const nrf_pwm_sequence_t seq_sat_modification;
+extern const nrf_pwm_sequence_t seq_bright_modification;
+
+extern nrf_pwm_values_individual_t duty_cycle_led1[];
+
+extern nrfx_pwm_t pwm0;
+extern nrfx_pwm_t pwm1_led_indication;
 
 void pwm_setup(void);// инициализация pwm и выходов
 
 
-void pwm_start(void);
 
 void pwm_stop(void);
 

@@ -14,18 +14,27 @@
 #define ON_STATUS 0
 #define OFF_STATUS 1
 
-#define NO_INPUT_MODE 0
-#define HUE_MODIFICATION 1
-#define SAT_MODIFICATION 2
-#define BRIGHT_MODIFICATION 3
 
-static const uint32_t modes[4] = {NO_INPUT_MODE, HUE_MODIFICATION, SAT_MODIFICATION, BRIGHT_MODIFICATION};
+
+
 
 extern volatile uint16_t button_status;
 
 
 
-volatile uint16_t on_off_status;
+extern volatile uint16_t on_off_status;
+
+typedef enum
+{
+    EVENT_DOUBLE_CLICK,
+    EVENT_BUTTON_PRESSED
+} event_t;
+
+
+
+void mode_handler(void);
+
+void event_handler(event_t event);
 
 void make_button_in(void); // инициализация пина кнопки как входящего 
 

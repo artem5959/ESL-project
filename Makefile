@@ -58,6 +58,8 @@ SRC_FILES += \
   $(PROJ_DIR)/src/button.c \
   $(PROJ_DIR)/src/pwm.c \
   $(PROJ_DIR)/src/log.c \
+  $(PROJ_DIR)/src/modes.c \
+  $(PROJ_DIR)/src/hsv.c \
   $(SDK_ROOT)/modules/nrfx/mdk/system_nrf52840.c \
 
 # Include folders common to all targets

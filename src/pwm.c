@@ -6,8 +6,8 @@
 #include "log.h"
 
 
-static nrfx_pwm_t pwm0 = NRFX_PWM_INSTANCE(0);
-static nrfx_pwm_t pwm1_led_indication = NRFX_PWM_INSTANCE(1);
+nrfx_pwm_t pwm0 = NRFX_PWM_INSTANCE(0);
+nrfx_pwm_t pwm1_led_indication = NRFX_PWM_INSTANCE(1);
 
 //static nrfx_pwm_config_t config1 = NRFX_PWM_DEFAULT_CONFIG;
 
@@ -63,33 +63,33 @@ static nrf_pwm_values_individual_t duty_cycle_led_gr2[] = {
     {255, 0, 0, 0}
 };
 
-static nrf_pwm_values_individual_t duty_cycle_led1[] = {
+nrf_pwm_values_individual_t duty_cycle_led1[] = {
     {0, 0, 0, 0}
 };
 
 
 static const nrf_pwm_sequence_t seq1 = {
-    .values.p_individual = duty_cycle_led0,
-    .length = NRF_PWM_VALUES_LENGTH(duty_cycle_led0),
+    .values.p_individual = duty_cycle_led1,
+    .length = NRF_PWM_VALUES_LENGTH(duty_cycle_led1),
     .repeats = 100,
     .end_delay = 0,
 };
 
-static const nrf_pwm_sequence_t seq_hue_modification = {
+const nrf_pwm_sequence_t seq_hue_modification = {
     .values.p_individual = duty_cycle_led_gr1,
     .length = NRF_PWM_VALUES_LENGTH(duty_cycle_led_gr1),
     .repeats = 100,
     .end_delay = 0,
 };
 
-static const nrf_pwm_sequence_t seq_sat_modification = {
+const nrf_pwm_sequence_t seq_sat_modification = {
     .values.p_individual = duty_cycle_led_gr1,
     .length = NRF_PWM_VALUES_LENGTH(duty_cycle_led_gr1),
     .repeats = 50,
     .end_delay = 0,
 };
 
-static const nrf_pwm_sequence_t seq_bright_modification = {
+const nrf_pwm_sequence_t seq_bright_modification = {
     .values.p_individual = duty_cycle_led_gr2,
     .length = NRF_PWM_VALUES_LENGTH(duty_cycle_led_gr2),
     .repeats = 100,
@@ -130,7 +130,7 @@ void pwm_stop(void)
 
 void pwm_stop_indication(void)
 {
-  nrfx_pwm_stop(&pwm1, true);
+  nrfx_pwm_stop(&pwm1_led_indication, true);
   NRF_LOG_INFO("PWM indication seq stopped");
 
 }

@@ -18,6 +18,8 @@
 #include "button.h"
 #include "pwm.h"
 #include "log.h"
+#include "modes.h"
+#include "hsv.h"
 
 
 
@@ -38,14 +40,14 @@ int main(void)
     gpiote_setup();
     irq_on();
     logs_init();  
-    pwm_start();
+    pwm_start_main();
 
     /* Toggle LEDs. */
     while (true)
     {
      
         
-      
+                
 
                 LOG_BACKEND_USB_PROCESS();
                 NRF_LOG_PROCESS();

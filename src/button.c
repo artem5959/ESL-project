@@ -5,39 +5,36 @@
 #include "nrf_drv_clock.h"
 #include "app_error.h"
 #include "log.h"
+#include "modes.h"
 
 APP_TIMER_DEF(debounce_timer);
 APP_TIMER_DEF(double_click_timer);
 APP_TIMER_DEF(button_pressed_timer);
 
-typedef enum
-{
-    EVENT_DOUBLE_CLICK
-    EVENT_BUTTON_PRESSED
-} event_t;
+
 
 void mode_handler(void)
 {
-    swtich (mode)
+    switch (mode)
     {
         case NO_INPUT_MODE:
         no_input_mode_on();
-        NRF_LOG_INFO("NOW -  NO_INPUT_MODE ")
+        NRF_LOG_INFO("NOW -  NO_INPUT_MODE ");
         break;
 
         case HUE_MODIFICATION:
         hue_modification_mode_on();
-        NRF_LOG_INFO("NOW -  HUE MODIFICATION MODE ")
+        NRF_LOG_INFO("NOW -  HUE MODIFICATION MODE ");
         break;
 
         case SAT_MODIFICATION:
         sat_modification_mode_on();
-        NRF_LOG_INFO("NOW -  SAT MODIFICATION MODE ")
+        NRF_LOG_INFO("NOW -  SAT MODIFICATION MODE ");
         break;
 
         case BRIGHT_MODIFICATION:
         brightness_modification_mode_on();
-        NRF_LOG_INFO("NOW -  BRIGHTNESS MODIFICATION MODE ")
+        NRF_LOG_INFO("NOW -  BRIGHTNESS MODIFICATION MODE ");
         break;
 
     }
@@ -50,7 +47,7 @@ void event_handler(event_t event)
     {
         case EVENT_DOUBLE_CLICK:
             mode++;
-            NRF_LOG_INFO("MODE CHANGED")
+            NRF_LOG_INFO("MODE CHANGED");
             if(mode > BRIGHT_MODIFICATION) {
                 mode = NO_INPUT_MODE;
             }
@@ -82,18 +79,12 @@ uint16_t check_mode_status(void){
    return mode;
 }
 
-void mode_handler(void)
-{
-
-}
 
 volatile uint16_t button_status = OFF_BUTTON;
 
 volatile uint16_t button_clics = 0;
 
 volatile uint16_t on_off_status = OFF_STATUS;
-
-volatile uint16_t mode = NO_INPUT_MODE;
 
 volatile uint16_t debounce_flag = 0;
 
@@ -119,7 +110,7 @@ static void button_pressed_handler(void * p_context)
 {
     if (check_button_status(BUTTON_PIN) == ON_BUTTON) {
         event_handler(EVENT_BUTTON_PRESSED);
-        NRF_LOG_INFO("EVENT: BUTTON PRESSED")
+        NRF_LOG_INFO("EVENT: BUTTON PRESSED");
     }
 }
 

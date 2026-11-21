@@ -250,6 +250,10 @@
 #define NRFX_PWM0_ENABLED 1
 #endif
 
+#ifndef NRFX_PWM1_ENABLED
+#define NRFX_PWM1_ENABLED 1
+#endif
+
 // <o> NRFX_PWM_DEFAULT_CONFIG_OUT0_PIN - Out0 pin  <0-31> 
 
 
