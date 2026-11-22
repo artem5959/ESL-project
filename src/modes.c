@@ -141,6 +141,9 @@ void no_input_mode_on(void)
                                 hsv.brightness_value);
         if(mode == NO_INPUT_MODE){
         nrfx_pwm_sequence_update(&pwm1_led_indication, 0, &no_input_modification);
+        if(hsv_to_flash_write(&hsv)){
+            NRF_LOG_INFO("HSV WRITE TO FLASH COMPLETED");
+        };
         return;
     }
 }

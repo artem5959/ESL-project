@@ -241,6 +241,10 @@
 #define NRF_LOG_DEFERRED 1
 #endif
 
+#ifndef NRFX_NVMC_ENABLED 
+#define NRFX_NVMC_ENABLED 1
+#endif
+
 // <e> NRFX_PWM_ENABLED - nrfx_pwm - PWM peripheral driver
 #ifndef NRFX_PWM_ENABLED
 #define NRFX_PWM_ENABLED 1

@@ -2,6 +2,9 @@
 #include "pwm.h"
 #include <math.h>
 #include "log.h"
+#include <stdbool.h>
+
+
 
 
 rgb_t actual = {0, 0, 0};
@@ -16,7 +19,10 @@ hsv_t hsv = {
 void setup_default_hsv(hsv_t *hsv_structure,
                         rgb_t *rgb_actual_structure,
                         nrf_pwm_values_individual_t *duty_cycle_ar)
-{
+{   
+    if(*(uint32_t *)(HSV_FLASH_ADDRESS + 12) == WRITTEN_FLAG) {
+    flash_values_to_hsv(hsv_structure);
+    }
     hsv_to_rgb(*hsv_structure, rgb_actual_structure); 
     rgb_to_duty_cycle_values(rgb_actual_structure, duty_cycle_ar);
 }
@@ -84,6 +90,59 @@ void rgb_to_duty_cycle_values(rgb_t *rgb_actual_structure, nrf_pwm_values_indivi
     duty_cycle_ar[0].channel_2 = rgb_actual_structure->g;
     duty_cycle_ar[0].channel_3 = rgb_actual_structure->b;
 }
+
+bool hsv_to_flash_write(hsv_t *hsv_structure)
+{
+    uint32_t address = HSV_FLASH_ADDRESS;
+    nrfx_nvmc_page_erase(address);
+    while (!nrfx_nvmc_write_done_check()) {};
+
+    if (nrfx_nvmc_word_writable_check(address, hsv_structure->hue_value) == true){
+    nrfx_nvmc_word_write(address, hsv_structure->hue_value);
+    address += 4;
+    }
+    else{
+        NRF_LOG_INFO("HSV To FLASH WRITE ERROR  - HUE : WRITABLE CHECK - FALSE");
+        return false;
+    }
+
+    if (nrfx_nvmc_word_writable_check(address, hsv_structure->saturation_value) == true){
+    nrfx_nvmc_word_write(address, hsv_structure->saturation_value);
+    address += 4;
+    }
+    else{
+        NRF_LOG_INFO("HSV To FLASH WRITE ERROR  - SAT : WRITABLE CHECK - FALSE");
+        return false;
+    }
+
+    if (nrfx_nvmc_word_writable_check(address, hsv_structure->brightness_value) == true){
+    nrfx_nvmc_word_write(address, hsv_structure->brightness_value);
+    address += 4;
+    }
+    else{
+        NRF_LOG_INFO("HSV To FLASH WRITE ERROR  - BRIGHTNESS : WRITABLE CHECK - FALSE");
+        return false;
+    }
+    
+    if (nrfx_nvmc_word_writable_check(address, WRITTEN_FLAG) == true){
+    nrfx_nvmc_word_write(address, WRITTEN_FLAG);
+    }
+    else{
+        NRF_LOG_INFO("HSV To FLASH WRITE ERROR  - WRITTEN FLAG: WRITABLE CHECK - FALSE");
+        return false;
+    }
+
+    while (!nrfx_nvmc_write_done_check()) {};
+    return true;
+}
+
+void flash_values_to_hsv(hsv_t *hsv_structure)
+{
+    hsv_structure->hue_value = *(uint32_t *)(HSV_FLASH_ADDRESS);
+    hsv_structure->saturation_value = *(uint32_t *)(HSV_FLASH_ADDRESS + 4);
+    hsv_structure->brightness_value = *(uint32_t *)(HSV_FLASH_ADDRESS + 8);
+}
+/**/
 
 void hue_modification_one_up(hsv_t *hsv_structure,
                             rgb_t *rgb_actual_structure,

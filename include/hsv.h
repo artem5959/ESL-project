@@ -4,6 +4,10 @@
 #include <stdint.h>
 
 #include "nrfx_pwm.h"
+#include "nrfx_nvmc.h"
+
+#define HSV_FLASH_ADDRESS 0x80000
+#define WRITTEN_FLAG 0xA5B6C7D8
 
 #define UP 1
 #define DOWN 0
@@ -37,6 +41,11 @@ void hsv_to_rgb(hsv_t hsv_structure, rgb_t *rgb_actual_structure); // Convertati
 void rgb_to_duty_cycle_values(rgb_t *rgb_actual_structure,
                             nrf_pwm_values_individual_t *duty_cycle_ar); // convertation rgb struct
                                                                         // to duty cycle vlues  massive
+
+bool hsv_to_flash_write(hsv_t *hsv_structure); // Write Values of hsv to FLASH 
+                                            //  on HSV_FLASH_ADDRESS adress and on WRITTEN_FLAG      
+
+void flash_values_to_hsv(hsv_t *hsv_structure);  // Write flash values to hsv                                                                      
 /**/
 
 
