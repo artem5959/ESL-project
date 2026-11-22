@@ -57,7 +57,7 @@ void hue_modification_mode_on(void)
                 NRF_LOG_PROCESS();
                 if (button_status == PRESSED) {
                     hue_modification_one_up(&hsv, &actual, duty_cycle_led1);
-                     nrf_delay_ms(5);
+                     nrf_delay_ms(10);
                     
                     
                     
