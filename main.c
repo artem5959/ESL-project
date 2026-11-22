@@ -31,7 +31,7 @@
 
 int main(void)
 {
-    /* Configure board. */
+    /* Init */
     clocks_and_timers_init();
     make_leds_out();
     all_leds_off();

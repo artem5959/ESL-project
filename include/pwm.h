@@ -29,17 +29,17 @@ extern nrf_pwm_values_individual_t duty_cycle_led1[];
 extern nrfx_pwm_t pwm0;
 extern nrfx_pwm_t pwm1_led_indication;
 
-void pwm_setup(void);// инициализация pwm и выходов
+void pwm_setup(void);// Pwm init
 
 
 
-void pwm_stop(void);
+void pwm_stop(void); // Pwm Stop (Main) sequence
 
-void pwm_start_main(void);
+void pwm_start_main(void); // Start main pwm sequence
 
-void pwm_start_indication(void);
+void pwm_start_indication(void); // Start indication pwm sequence
 
-void pwm_stop_indication(void);
+void pwm_stop_indication(void); // Stop indication pwm sequence
 
 
 
