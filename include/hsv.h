@@ -38,6 +38,9 @@ void setup_default_hsv(hsv_t *hsv_structure,
 void hsv_to_rgb(hsv_t hsv_structure, rgb_t *rgb_actual_structure); // Convertation hsv structure
                                                                     // to rgb structure
 
+void rgb_to_hsv(rgb_t rgb_structure, hsv_t *hsv_actual_structure); // Convertation rgb structure
+                                                                    // to hsv structure
+
 void rgb_to_duty_cycle_values(rgb_t *rgb_actual_structure,
                             nrf_pwm_values_individual_t *duty_cycle_ar); // convertation rgb struct
                                                                         // to duty cycle vlues  massive
@@ -45,7 +48,16 @@ void rgb_to_duty_cycle_values(rgb_t *rgb_actual_structure,
 bool hsv_to_flash_write(hsv_t *hsv_structure); // Write Values of hsv to FLASH 
                                             //  on HSV_FLASH_ADDRESS adress and on WRITTEN_FLAG      
 
-void flash_values_to_hsv(hsv_t *hsv_structure);  // Write flash values to hsv                                                                      
+void flash_values_to_hsv(hsv_t *hsv_structure);  // Write flash values to hsv     
+
+
+void rgb_set(rgb_t *rgb_actual_structure, int r, int g, int b,
+                            hsv_t *hsv_structure,
+                    nrf_pwm_values_individual_t *duty_cycle_ar);
+
+void hsv_set(hsv_t *hsv_structure, int h ,int s, int v, 
+                            rgb_t *rgb_actual_structure,
+                        nrf_pwm_values_individual_t *duty_cycle_ar);
 /**/
 
 

@@ -20,6 +20,7 @@
 #include "log.h"
 #include "modes.h"
 #include "hsv.h"
+#include "cdc.h"
 
 
 
@@ -43,11 +44,19 @@ int main(void)
     pwm_start_main();
     pwm_start_indication();
     setup_default_hsv(&hsv, &actual, duty_cycle_led1);
+    cdc_init();
 
 
     /* Toggle LEDs. */
     while (true)
     {
+
+         
+
+            while (app_usbd_event_queue_process())
+            {
+            /* Nothing to do */
+            }
      
             if (mode_flag == CHANGED) {
                 mode_handler();

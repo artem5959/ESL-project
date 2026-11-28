@@ -83,6 +83,75 @@ void hsv_to_rgb(hsv_t hsv_structure, rgb_t *rgb_actual_structure)
     rgb_actual_structure->g = (uint8_t)((g + m) * 255.0f);
     rgb_actual_structure->b = (uint8_t)((b + m) * 255.0f);
 }
+void rgb_to_hsv(rgb_t rgb_structure, hsv_t *hsv_actual_structure)
+{
+    float r = rgb_structure.r / 255.0f;
+    float g = rgb_structure.g / 255.0f;
+    float b = rgb_structure.b / 255.0f;
+
+    float max = fmaxf(r, fmaxf(g, b));
+    float min = fminf(r, fminf(g, b));
+    float delta = max - min;
+
+    float h = 0.0f;
+    float s = 0.0f;
+    float v = max;
+
+    // Hue
+    if (delta == 0.0f)
+    {
+        h = 0.0f;
+    }
+    else if (max == r)
+    {
+        h = 60.0f * fmodf((g - b) / delta, 6.0f);
+    }
+    else if (max == g)
+    {
+        h = 60.0f * (((b - r) / delta) + 2.0f);
+    }
+    else
+    {
+        h = 60.0f * (((r - g) / delta) + 4.0f);
+    }
+
+    if (h < 0.0f)
+        h += 360.0f;
+
+    // Saturation
+    if (max == 0.0f)
+        s = 0.0f;
+    else
+        s = delta / max;
+
+    hsv_actual_structure->hue_value = (uint16_t)h;
+    hsv_actual_structure->saturation_value = (uint8_t)(s * 100.0f);
+    hsv_actual_structure->brightness_value = (uint8_t)(v * 100.0f);
+}
+
+void rgb_set(rgb_t *rgb_actual_structure, int r, int g, int b,
+                            hsv_t *hsv_structure,
+                    nrf_pwm_values_individual_t *duty_cycle_ar)
+{
+    rgb_actual_structure->r = r;
+    rgb_actual_structure->g = g;
+    rgb_actual_structure->b = b;
+
+    rgb_to_hsv(*rgb_actual_structure, hsv_structure);
+    rgb_to_duty_cycle_values(rgb_actual_structure, duty_cycle_ar);
+}
+
+void hsv_set(hsv_t *hsv_structure, int h ,int s, int v, 
+                            rgb_t *rgb_actual_structure,
+                        nrf_pwm_values_individual_t *duty_cycle_ar)
+{
+    hsv_structure->hue_value = h;
+    hsv_structure->saturation_value = s;
+    hsv_structure->brightness_value = v;
+
+    hsv_to_rgb(*hsv_structure, rgb_actual_structure); 
+    rgb_to_duty_cycle_values(rgb_actual_structure, duty_cycle_ar);
+}
 
 void rgb_to_duty_cycle_values(rgb_t *rgb_actual_structure, nrf_pwm_values_individual_t *duty_cycle_ar)
 {
